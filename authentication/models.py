@@ -11,8 +11,6 @@ from core.models import TimestampedModel
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
-        from django.contrib.auth.models import Group
-
         if username is None:
             raise TypeError("Users must have a username.")
 
@@ -22,9 +20,7 @@ class UserManager(BaseUserManager):
         if password is None:
             raise TypeError("Users must have a password.")
 
-        user = self.model(
-            username=username, email=self.normalize_email(email)
-        )
+        user = self.model(username=username, email=self.normalize_email(email))
         user.set_password(password)
         user.save()
 
@@ -44,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
     is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = ["email"]
 
     objects = UserManager()
 
@@ -58,10 +54,6 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
         почты. Обычно это имя фамилия пользователя, но поскольку мы не
         используем их, будем возвращать username.
         """
-        return self.username
-
-    def get_short_name(self):
-        """Аналогично методу get_full_name()."""
         return self.username
 
     def get_refresh_token(self):

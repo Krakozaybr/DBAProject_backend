@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.renderers import get_simple_renderer
+from core.renderers import SimpleJSONRenderer
 from .serializers import (
     LoginSerializer,
     RegistrationSerializer,
@@ -12,11 +12,8 @@ from .serializers import (
 )
 
 
-user_renderer = get_simple_renderer("user")
-
-
 class RegistrationAPIView(APIView):
-    renderer_classes = (user_renderer,)
+    renderer_classes = (SimpleJSONRenderer,)
     """
     Разрешить всем пользователям (аутентифицированным и нет) доступ к данному эндпоинту.
     """
@@ -24,7 +21,7 @@ class RegistrationAPIView(APIView):
     serializer_class = RegistrationSerializer
 
     def post(self, request):
-        user = request.data.get("user", {})
+        user = request.data or dict()
 
         # Паттерн создания сериализатора, валидации и сохранения - довольно
         # стандартный, и его можно часто увидеть в реальных проектах.
@@ -37,11 +34,11 @@ class RegistrationAPIView(APIView):
 
 class LoginAPIView(APIView):
     permission_classes = (AllowAny,)
-    renderer_classes = (user_renderer,)
+    renderer_classes = (SimpleJSONRenderer,)
     serializer_class = LoginSerializer
 
     def post(self, request):
-        user = request.data.get("user", {})
+        user = request.data
 
         # Обратите внимание, что мы не вызываем метод save() сериализатора, как
         # делали это для регистрации. Дело в том, что в данном случае нам
@@ -54,7 +51,7 @@ class LoginAPIView(APIView):
 
 class UserRetrieveAPIView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
-    renderer_classes = (user_renderer,)
+    renderer_classes = (SimpleJSONRenderer,)
     serializer_class = UserSerializer
 
     def retrieve(self, request, *args, **kwargs):
@@ -68,11 +65,11 @@ class UserRetrieveAPIView(RetrieveAPIView):
 
 class UserUpdateAPIView(UpdateAPIView):
     permission_classes = (IsAuthenticated,)
-    renderer_classes = (user_renderer,)
+    renderer_classes = (SimpleJSONRenderer,)
     serializer_class = UserSerializer
 
     def update(self, request, *args, **kwargs):
-        serializer_data = request.data.get("user", {})
+        serializer_data = request.data
 
         # Паттерн сериализации, валидирования и сохранения - то, о чем говорили
         serializer = self.serializer_class(
