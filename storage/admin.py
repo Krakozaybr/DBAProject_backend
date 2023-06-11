@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import ProcessedImage, Shape, Defect
 
-# Register your models here.
+admin.register(ProcessedImage)
+admin.register(Shape)
+admin.register(Defect)

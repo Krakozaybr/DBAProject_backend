@@ -6,6 +6,7 @@ from .views import (
     RegistrationAPIView,
     UserRetrieveAPIView,
     UserUpdateAPIView,
+    AccessCheckAPIView,
 )
 
 app_name = "authentication"
@@ -15,4 +16,5 @@ urlpatterns = [
     path("signup/", RegistrationAPIView.as_view()),
     path("login/", LoginAPIView.as_view()),
     path("refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("check/", AccessCheckAPIView.as_view()),
 ]

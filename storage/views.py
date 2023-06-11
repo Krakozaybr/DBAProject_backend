@@ -1,8 +1,13 @@
-from rest_framework.generics import CreateAPIView, RetrieveDestroyAPIView, ListAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import (
+    CreateAPIView,
+    RetrieveDestroyAPIView,
+    ListAPIView,
+    UpdateAPIView,
+)
+from rest_framework.permissions import IsAuthenticated, DjangoObjectPermissions
 
 from .models import ProcessedImage
-from .serializers import ProcessedImageSerializer
+from .serializers import ProcessedImageSerializer, ImageUploadSerializer
 
 
 class AddDataAPI(CreateAPIView):
@@ -12,7 +17,7 @@ class AddDataAPI(CreateAPIView):
 
 
 class StorageAPI(RetrieveDestroyAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DjangoObjectPermissions)
     serializer_class = ProcessedImageSerializer
     lookup_url_kwarg = "pk"
     queryset = ProcessedImage.objects.all()
@@ -25,3 +30,10 @@ class UserStorageAPI(ListAPIView):
 
     def filter_queryset(self, queryset):
         return super().filter_queryset(queryset).filter(user__pk=self.request.user.pk)
+
+
+class ImageUploadAPI(UpdateAPIView):
+    permission_classes = (IsAuthenticated, DjangoObjectPermissions)
+    serializer_class = ImageUploadSerializer
+    lookup_url_kwarg = "pk"
+    queryset = ProcessedImage.objects.all()

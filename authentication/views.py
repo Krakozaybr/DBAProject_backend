@@ -79,3 +79,10 @@ class UserUpdateAPIView(UpdateAPIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AccessCheckAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        return Response(dict(), status.HTTP_200_OK)
