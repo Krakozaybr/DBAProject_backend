@@ -1,4 +1,5 @@
-import datetime
+import os
+import uuid
 
 from django.db.models import (
     Model,
@@ -9,9 +10,8 @@ from django.db.models import (
     ForeignKey,
     CASCADE,
     DateTimeField,
+    BooleanField,
 )
-import uuid
-import os
 
 
 def get_file_path(instance, filename):
@@ -21,9 +21,15 @@ def get_file_path(instance, filename):
 
 
 class ProcessedImage(Model):
-    user = ForeignKey("authentication.User", on_delete=CASCADE)
-    source = ImageField(upload_to=get_file_path, null=True)
+    name = CharField(max_length=300, default="Request")
+    user = ForeignKey(
+        "authentication.User",
+        on_delete=CASCADE,
+    )
+    source = ImageField(upload_to=get_file_path, default="placeholder.png")
     date_creation = DateTimeField()
+    rotated = BooleanField(default=False)
+    selected = BooleanField(default=False)
 
 
 class Shape(Model):

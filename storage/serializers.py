@@ -2,9 +2,7 @@ import json
 
 from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
-from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
 
-from core.mixins import EditPermissionsMixin
 from .models import ProcessedImage, Shape, Defect
 
 
@@ -38,13 +36,11 @@ class ShapeSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Shape
-        fields = ["label", "score", "bbox", "polygon", "defects"]
+        fields = ["label", "score", "bbox", "defects", "polygon"]
 
 
 class ProcessedImageSerializer(
     WritableNestedModelSerializer,
-    EditPermissionsMixin,
-    ObjectPermissionsAssignmentMixin,
 ):
 
     shapes = ShapeSerializer(many=True)
@@ -52,7 +48,15 @@ class ProcessedImageSerializer(
 
     class Meta:
         model = ProcessedImage
-        fields = ["id", "dateCreation", "shapes"]
+        fields = [
+            "id",
+            "name",
+            "rotated",
+            "selected",
+            "dateCreation",
+            "source",
+            "shapes",
+        ]
         read_only_fields = ["id", "source"]
 
     def create(self, validated_data):
@@ -66,3 +70,15 @@ class ImageUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProcessedImage
         fields = ["source"]
+
+
+class SelectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProcessedImage
+        fields = ["selected"]
+
+
+class NameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProcessedImage
+        fields = ["name"]

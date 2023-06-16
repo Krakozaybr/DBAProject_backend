@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     "authentication",
     "storage",
     "core",
-    "guardian",
     "django_cleanup.apps.CleanupConfig",
 ]
 
@@ -95,8 +94,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5, days=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
@@ -121,10 +120,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
 
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",  # default
-    "guardian.backends.ObjectPermissionBackend",
-)
+AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)  # default
 
 LANGUAGE_CODE = "en-us"
 
@@ -141,3 +137,4 @@ MEDIA_URL = "/media/"
 AUTH_USER_MODEL = "authentication.User"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DATA_UPLOAD_MAX_MEMORY_SIZE = 30 * 1024 * 1024
